@@ -1,3 +1,17 @@
+#' @title Run Convergent Cross Mapping
+#' @description Uses a leave one out cross validation to calculate the predictability of X|Y and Y|X.
+#' @param X a vector containing series of observations
+#' @param Y a vector containing series of observations
+#' @param tau the lag a which to generate each lagging vector
+#' @param E the number of lags to include
+#' @param randomWindow logical indicating how to select the window on which to compute shadow manifolds. If set to FALSE, will use the window beginning at (E-1)tau.
+#' @param reps number of repeated random window samples on which to average the cross correlation
+#' @return the predicted value of y
+#' @keywords predict
+#' @seealso \code{\link{calc_weights}} 
+#' @examples
+#' #str_length(letters)
+#' #str_length(c("i", "like", "programming", NA))
 run_ccm <-
 function(X,Y,tau=1,E=2,randomWindow=FALSE,reps=1)
 {

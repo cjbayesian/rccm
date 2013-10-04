@@ -1,120 +1,40 @@
 \name{run_ccm}
 \alias{run_ccm}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Run Convergent Cross Mapping}
 \usage{
-run_ccm(X, Y, tau = 1, E = 2, randomWindow = FALSE, reps = 1)
+  run_ccm(X, Y, tau = 1, E = 2, randomWindow = FALSE,
+    reps = 1)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{X}{
-%%     ~~Describe \code{X} here~~
-}
-  \item{Y}{
-%%     ~~Describe \code{Y} here~~
-}
-  \item{tau}{
-%%     ~~Describe \code{tau} here~~
-}
-  \item{E}{
-%%     ~~Describe \code{E} here~~
-}
-  \item{randomWindow}{
-%%     ~~Describe \code{randomWindow} here~~
-}
-  \item{reps}{
-%%     ~~Describe \code{reps} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{X}{a vector containing series of observations}
+
+  \item{Y}{a vector containing series of observations}
+
+  \item{tau}{the lag a which to generate each lagging
+  vector}
+
+  \item{E}{the number of lags to include}
+
+  \item{randomWindow}{logical indicating how to select the
+  window on which to compute shadow manifolds. If set to
+  FALSE, will use the window beginning at (E-1)tau.}
+
+  \item{reps}{number of repeated random window samples on
+  which to average the cross correlation}
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  the predicted value of y
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\description{
+  Uses a leave one out cross validation to calculate the
+  predictability of X|Y and Y|X.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (X, Y, tau = 1, E = 2, randomWindow = FALSE, reps = 1) 
-{
-    laggedX <- gen_lagged_vec(X = X, E = E, tau = tau)
-    laggedY <- gen_lagged_vec(X = Y, E = E, tau = tau)
-    dists_x_all <- as.matrix(dist(laggedX$x))
-    dists_y_all <- as.matrix(dist(laggedY$x))
-    max_shadow <- dim(dists_x_all)[1]
-    Time <- length(X)
-    cor_x <- numeric(Time)
-    cor_y <- numeric(Time)
-    for (L in (5 + (E - 1) * tau):Time) {
-        n_shadow <- L - (E - 1) * tau
-        pred_x <- numeric(n_shadow)
-        pred_y <- numeric(n_shadow)
-        actual_x <- numeric(n_shadow)
-        actual_y <- numeric(n_shadow)
-        cor_x_tmp <- numeric(reps)
-        cor_y_tmp <- numeric(reps)
-        for (rep in 1:reps) {
-            start <- 1
-            if (randomWindow) 
-                start <- sample(1:(max_shadow - n_shadow + 1), 
-                  1)
-            window <- start:(start + n_shadow - 1)
-            dists_x <- dists_x_all[window, window]
-            dists_y <- dists_y_all[window, window]
-            x = laggedX$x[window, ]
-            y = laggedY$x[window, ]
-            nn_x <- get_nn(x, dists_x)
-            nn_y <- get_nn(y, dists_y)
-            for (i in 1:n_shadow) {
-                ww <- calc_weights(x = x, dists = dists_x, index = i, 
-                  nn = nn_x)
-                pred_y[i] <- predict_y(y = y, wt = ww)
-                actual_y[i] <- y[i, 1]
-                ww <- calc_weights(x = y, dists = dists_y, index = i, 
-                  nn = nn_y)
-                pred_x[i] <- predict_y(y = x, wt = ww)
-                actual_x[i] <- x[i, 1]
-            }
-            cor_x_tmp[rep] <- cor(pred_x, actual_x)
-            cor_y_tmp[rep] <- cor(pred_y, actual_y)
-        }
-        cor_x[L] <- mean(cor_x_tmp)
-        cor_y[L] <- mean(cor_y_tmp)
-        cat(L, "\t", cor_x[L], "\t", cor_y[L], "\n")
-    }
-    cor_x[cor_x < 0] <- 0
-    cor_y[cor_y < 0] <- 0
-    return(list(cor_x = cor_x, cor_y = cor_y))
-  }
+#str_length(letters)
+#str_length(c("i", "like", "programming", NA))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\seealso{
+  \code{\link{calc_weights}}
+}
+\keyword{predict}
+

@@ -5,5 +5,13 @@ Version: 1.0
 Date: 2013-10-03
 Author: Corey Chivers
 Maintainer: <corey.chivers@mail.mcgill.ca>
-Description: 
+Description: Impliments the convergent cross mapping (CCM) method described in
+    Sugihara, G., May, R., Ye, H., Hsieh, C., Deyle,E., Fogarty, M., Munch, S.
+    (2012) Detecting Causality in Complex Ecosystems. Science 338, 496.
 License: GPL (>= 3)
+Collate:
+    'calc_weights.R'
+    'gen_lagged_vec.R'
+    'get_nn.R'
+    'predict_y.R'
+    'run_ccm.R'
