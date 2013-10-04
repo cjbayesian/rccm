@@ -1,0 +1,9 @@
+Package: rccm
+Type: Package
+Title: Convergent Cross Mapping - Detecting Causalilty in Complex Systems
+Version: 1.0
+Date: 2013-10-03
+Author: Corey Chivers
+Maintainer: <corey.chivers@mail.mcgill.ca>
+Description: 
+License: GPL (>= 3)
